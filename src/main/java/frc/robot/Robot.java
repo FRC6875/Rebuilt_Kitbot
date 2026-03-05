@@ -6,14 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.CANFuelSubsystem;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -25,13 +20,6 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
  * project.
  */
 public class Robot extends TimedRobot {
-  private final PWMSparkMax m_leftmotor = new PWMSparkMax(0);
-  private final PWMSparkMax m_rightmotor = new PWMSparkMax(1);
-  private final DifferentialDrive m_RobotDrive = new DifferentialDrive(m_leftmotor::set, m_rightmotor::set);
-  private final XboxController m_drivController = new XboxController(0);
-  private final CANFuelSubsystem m_feederRoller = new CANFuelSubsystem();
-  private final CANFuelSubsystem m_intakeLauncherRoller = new CANFuelSubsystem();
-
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -43,9 +31,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    SendableRegistry.addChild(m_RobotDrive, m_leftmotor);
-    SendableRegistry.addChild(m_RobotDrive, m_rightmotor);
-    m_rightmotor.setInverted(true);
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
@@ -119,18 +104,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-  m_RobotDrive.arcadeDrive(-m_drivController.getRawAxis(0), m_drivController.getRawAxis(1));
-  if(m_drivController.getRawButtonPressed(0)){
-    m_intakeLauncherRoller.runIntakeLauncherRoller();
-  }else {
-    m_intakeLauncherRoller.stopIntakeLauncherRoller();
-  }
-
-   if(m_drivController.getRawButtonPressed(1)){
-    m_feederRoller.runFeederRoller();
-  }else {
-    m_feederRoller.stopFeederRoller();
-  }
   }
 
   @Override
